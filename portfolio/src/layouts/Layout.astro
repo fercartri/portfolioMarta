@@ -1,0 +1,63 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { 
+  title, 
+  description = "Portfolio de Arquitectura - Proyectos personales y colaboraciones." 
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth bg-[#fafafa] text-zinc-900 antialiased">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <!-- Tipografía limpia sans-serif por defecto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body class="font-['Inter',sans-serif] min-h-screen flex flex-col justify-between selection:bg-zinc-900 selection:text-white">
+    
+    <!-- Header / Navbar Minimalista -->
+    <header class="sticky top-0 z-50 bg-[#fafafa]/80 backdrop-blur-md border-b border-zinc-200/60">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a href="/" class="text-sm font-semibold tracking-wider uppercase group">
+          Marta <span class="text-zinc-400 group-hover:text-zinc-900 transition-colors">/ Arquitectura</span>
+        </a>
+        <nav class="flex items-center gap-8 text-sm font-medium text-zinc-600">
+          <a href="#proyectos" class="hover:text-zinc-900 transition-colors">Proyectos</a>
+          <a href="/sobre-mi" class="hover:text-zinc-900 transition-colors">Sobre mí</a>
+          <a href="#contacto" class="hover:text-zinc-900 transition-colors">Contacto</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    <!-- Footer Sobrio -->
+    <footer id="contacto" class="border-t border-zinc-200 bg-zinc-900 text-zinc-400 py-16 mt-24">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+        <div>
+          <p class="text-xs uppercase tracking-widest text-zinc-500 mb-2">Contacto</p>
+          <a href="mailto:marta@ejemplo.com" class="text-2xl text-white font-light hover:underline">
+            marta@ejemplo.com
+          </a>
+        </div>
+        <div class="flex gap-6 text-sm">
+          <a href="https://linkedin.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Instagram</a>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>
