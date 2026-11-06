@@ -26,40 +26,39 @@ featuredProjects.sort((a, b) => a.data.order - b.data.order);
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
       {featuredProjects.map((project) => (
-        <article class="group cursor-pointer">
-          <div class="overflow-hidden bg-zinc-100 aspect-[4/3] mb-5 relative">
-            <Image 
-              src={project.data.coverImage} 
-              alt={project.data.title}
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-            />
-            <!-- Tag discreto de tipo de proyecto -->
-            <span class={`absolute top-4 left-4 text-[10px] uppercase font-mono tracking-wider px-3 py-1 backdrop-blur-md ${
-              project.data.type === 'personal' 
-                ? 'bg-zinc-900/80 text-white' 
-                : 'bg-white/80 text-zinc-900 border border-zinc-200'
-            }`}>
-              {project.data.type === 'personal' ? 'Proyecto Personal' : 'Colaboración'}
-            </span>
-          </div>
-
-          <div class="flex justify-between items-start">
-            <div>
-              <h3 class="text-xl font-medium text-zinc-900 group-hover:underline underline-offset-4">
-                {project.data.title}
-              </h3>
-              <p class="text-sm text-zinc-500 mt-1">{project.data.tagline}</p>
-              
-              <!-- Si es colaborativo, mostramos la línea del estudio -->
-              {project.data.collaboration && (
-                <p class="text-xs text-zinc-400 font-mono mt-2">
-                  w/ {project.data.collaboration.studio} · {project.data.collaboration.role}
-                </p>
-              )}
+        <a href={`/proyectos/${project.id}`} class="group block">
+          <article>
+            <div class="overflow-hidden bg-zinc-100 aspect-[4/3] mb-5 relative">
+              <Image 
+                src={project.data.coverImage} 
+                alt={project.data.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              />
+              <span class={`absolute top-4 left-4 text-[10px] uppercase font-mono tracking-wider px-3 py-1 backdrop-blur-md ${
+                project.data.type === 'personal' 
+                  ? 'bg-zinc-900/80 text-white' 
+                  : 'bg-white/80 text-zinc-900 border border-zinc-200'
+              }`}>
+                {project.data.type === 'personal' ? 'Proyecto Personal' : 'Colaboración'}
+              </span>
             </div>
-            <span class="text-xs font-mono text-zinc-400">{project.data.year}</span>
-          </div>
-        </article>
+
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-xl font-medium text-zinc-900 group-hover:underline underline-offset-4">
+                  {project.data.title}
+                </h3>
+                <p class="text-sm text-zinc-500 mt-1">{project.data.tagline}</p>
+                {project.data.collaboration && (
+                  <p class="text-xs text-zinc-400 font-mono mt-2">
+                    w/ {project.data.collaboration.studio} · {project.data.collaboration.role}
+                  </p>
+                )}
+              </div>
+              <span class="text-xs font-mono text-zinc-400">{project.data.year}</span>
+            </div>
+          </article>
+        </a>
       ))}
     </div>
   </section>

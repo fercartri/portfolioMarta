@@ -1,0 +1,96 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+
+// 1. Generamos las rutas estáticas para cada proyecto en tiempo de build
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<Layout title={`${project.data.title} | Marta Arquitectura`}>
+  <article class="max-w-7xl mx-auto px-6 pt-12 pb-24">
+    
+    <!-- Enlace Volver -->
+    <a href="/" class="inline-flex items-center text-xs font-mono text-zinc-400 hover:text-zinc-900 mb-12 transition-colors">
+      ← Volver a proyectos
+    </a>
+
+    <!-- Cabecera del Proyecto -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16 border-b border-zinc-200 pb-16">
+      <div class="lg:col-span-2">
+        <span class={`text-[10px] uppercase font-mono tracking-wider px-3 py-1 inline-block mb-4 ${
+          project.data.type === 'personal' 
+            ? 'bg-zinc-900 text-white' 
+            : 'bg-zinc-200 text-zinc-800'
+        }`}>
+          {project.data.type === 'personal' ? 'Proyecto Personal' : 'Proyecto en Colaboración'}
+        </span>
+
+        <h1 class="text-4xl sm:text-5xl font-light text-zinc-900 mb-4">
+          {project.data.title}
+        </h1>
+        <p class="text-xl text-zinc-500 font-light max-w-2xl">
+          {project.data.tagline}
+        </p>
+      </div>
+
+      <!-- Ficha Técnica (Sidebar) -->
+      <div class="space-y-6 text-sm border-t lg:border-t-0 lg:border-l border-zinc-200 pt-8 lg:pt-0 lg:pl-12 font-mono">
+        <div>
+          <span class="text-xs text-zinc-400 uppercase block mb-1">Año</span>
+          <p class="text-zinc-900">{project.data.year}</p>
+        </div>
+
+        <div>
+          <span class="text-xs text-zinc-400 uppercase block mb-1">Ubicación</span>
+          <p class="text-zinc-900">{project.data.location}</p>
+        </div>
+
+        {project.data.surfaceArea && (
+          <div>
+            <span class="text-xs text-zinc-400 uppercase block mb-1">Superficie</span>
+            <p class="text-zinc-900">{project.data.surfaceArea}</p>
+          </div>
+        )}
+
+        <!-- Detalles de colaboración (si aplica) -->
+        {project.data.collaboration && (
+          <div class="pt-4 border-t border-zinc-200 space-y-4">
+            <div>
+              <span class="text-xs text-zinc-400 uppercase block mb-1">Estudio Principal</span>
+              <p class="text-zinc-900 font-semibold">{project.data.collaboration.studio}</p>
+            </div>
+            <div>
+              <span class="text-xs text-zinc-400 uppercase block mb-1">Rol Desempeñado</span>
+              <p class="text-zinc-700">{project.data.collaboration.role}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <!-- Imagen Portada Principal -->
+    <div class="mb-20 aspect-[16/9] overflow-hidden bg-zinc-100">
+      <Image 
+        src={project.data.coverImage} 
+        alt={project.data.title}
+        class="w-full h-full object-cover"
+      />
+    </div>
+
+    <!-- Cuerpo del Proyecto (Markdown renderizado con diseño de lectura amplio) -->
+    <div class="max-w-3xl mx-auto prose prose-zinc prose-lg leading-relaxed text-zinc-700">
+      <Content />
+    </div>
+
+  </article>
+</Layout>
