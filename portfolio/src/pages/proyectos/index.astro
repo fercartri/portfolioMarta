@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+
+// Obtenemos todos los proyectos ordenados por su campo 'order'
+const allProjects = await getCollection('projects');
+allProjects.sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout title="Proyectos | Marta Arquitectura">
+  <section class="max-w-7xl mx-auto px-6 pt-16 pb-24">
+    <!-- Encabezado de la página -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-6 border-b border-zinc-200 gap-6">
+      <div>
+        <span class="text-xs font-mono uppercase text-zinc-400 tracking-widest">Catálogo Completo</span>
+        <h1 class="text-3xl sm:text-4xl font-light text-zinc-900 mt-2">Todos los Proyectos</h1>
+      </div>
+
+      <!-- Filtros interactivos de cliente -->
+      <div class="flex items-center gap-2 text-xs font-mono">
+        <button 
+          data-filter="all" 
+          class="filter-btn active px-4 py-2 border border-zinc-900 bg-zinc-900 text-white transition-colors cursor-pointer"
+        >
+          Todos ({allProjects.length})
+        </button>
+        <button 
+          data-filter="personal" 
+          class="filter-btn px-4 py-2 border border-zinc-200 text-zinc-600 hover:border-zinc-900 transition-colors cursor-pointer"
+        >
+          Personales
+        </button>
+        <button 
+          data-filter="collaborative" 
+          class="filter-btn px-4 py-2 border border-zinc-200 text-zinc-600 hover:border-zinc-900 transition-colors cursor-pointer"
+        >
+          Colaboraciones
+        </button>
+      </div>
+    </div>
+
+    <!-- Retícula de Proyectos -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
+      {allProjects.map((project) => (
+        <a 
+          href={`/proyectos/${project.id}`} 
+          class="project-item group block" 
+          data-type={project.data.type}
+        >
+          <article>
+            <div class="overflow-hidden bg-zinc-100 aspect-[4/3] mb-4 relative">
+              <Image 
+                src={project.data.coverImage} 
+                alt={project.data.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              />
+              <span class={`absolute top-3 left-3 text-[9px] uppercase font-mono tracking-wider px-2.5 py-1 backdrop-blur-md ${
+                project.data.type === 'personal' 
+                  ? 'bg-zinc-900/90 text-white' 
+                  : 'bg-white/90 text-zinc-900 border border-zinc-200'
+              }`}>
+                {project.data.type === 'personal' ? 'Personal' : 'Colaboración'}
+              </span>
+            </div>
+
+            <div class="flex justify-between items-start gap-4">
+              <div>
+                <h2 class="text-base font-medium text-zinc-900 group-hover:underline underline-offset-4">
+                  {project.data.title}
+                </h2>
+                <p class="text-xs text-zinc-500 mt-1 line-clamp-1">{project.data.tagline}</p>
+                {project.data.collaboration && (
+                  <p class="text-[11px] text-zinc-400 font-mono mt-1">
+                    w/ {project.data.collaboration.studio}
+                  </p>
+                )}
+              </div>
+              <span class="text-xs font-mono text-zinc-400 shrink-0">{project.data.year}</span>
+            </div>
+          </article>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<!-- Script ligero en cliente para filtrar sin recargar la página -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const items = document.querySelectorAll<HTMLElement>('.project-item');
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+
+        // Actualizar estados visuales de los botones
+        buttons.forEach((b) => {
+          b.classList.remove('bg-zinc-900', 'text-white', 'border-zinc-900');
+          b.classList.add('text-zinc-600', 'border-zinc-200');
+        });
+        btn.classList.add('bg-zinc-900', 'text-white', 'border-zinc-900');
+        btn.classList.remove('text-zinc-600', 'border-zinc-200');
+
+        // Filtrar elementos de la retícula
+        items.forEach((item) => {
+          const itemType = item.getAttribute('data-type');
+          if (filter === 'all' || itemType === filter) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  });
+</script>
