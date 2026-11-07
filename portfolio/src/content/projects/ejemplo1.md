@@ -10,6 +10,4 @@ featured: true
 order: 1
 ---
 
-## Concepto
-
 El proyecto nace del respeto por la topografía existente. Tres volúmenes escalonados de piedra y madera dialogan con el pinar envolvente...

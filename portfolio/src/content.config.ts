@@ -3,8 +3,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const projectsCollection = defineCollection({
-  // Detecta automáticamente si está en la carpeta 'es' o 'en'
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/projects' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
   schema: ({ image }) => z.object({
     title: z.string(),
     tagline: z.string().max(140),
